@@ -13,3 +13,5 @@ pnpm dev
 # or
 bun dev
 ```
+
+App is listening on port `3001`.

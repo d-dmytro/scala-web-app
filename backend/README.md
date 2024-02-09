@@ -9,7 +9,7 @@ For more information on the sbt-dotty plugin, see the
 
 ### Database migrations
 
-There are two ways to create migrations:
+There are two ways to create a migration:
 
 1. SQL files in `src/main/resources/migration`
 2. Scala files in `src/main/scala/db/migration`

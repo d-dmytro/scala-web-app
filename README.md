@@ -17,3 +17,6 @@ I created an authentication service that includes the following:
 
 This repo contains both, the Scala backend and Next.js frontend parts of the app.
 Both apps include their readmes with instructions.
+
+This app is not perfect, but it can be used as a base or a reference for
+getting started with building web services using Scala.

@@ -1,6 +1,7 @@
-package engineering.dd.scalawebapp.auth
+package engineering.dd.scalawebapp.auth.utils
 
 import cats.effect.IO
+import engineering.dd.scalawebapp.auth.TokenPayload
 import io.circe.Decoder
 import io.circe.Encoder
 import io.circe.parser.decode
@@ -8,16 +9,14 @@ import io.circe.syntax.*
 import pdi.jwt.JwtAlgorithm
 import pdi.jwt.JwtCirce
 import pdi.jwt.JwtClaim
-
-import java.time.Instant
 import pdi.jwt.JwtOptions
 import pdi.jwt.exceptions.JwtExpirationException
 
-trait TokenPayload
+import java.time.Instant
 
 case class JwtExpiredError(message: String) extends Exception(message)
 
-object JwtUtils {
+object JWT {
   def decodeJwt[P <: TokenPayload: Decoder](
       jwt: String,
       secretKey: String,

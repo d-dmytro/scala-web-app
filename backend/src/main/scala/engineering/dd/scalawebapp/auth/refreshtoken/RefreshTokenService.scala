@@ -1,13 +1,11 @@
-package engineering.dd.scalawebapp.auth
+package engineering.dd.scalawebapp.auth.refreshtoken
 
 import cats.effect.IO
 import engineering.dd.scalawebapp.AuthConfig
+import engineering.dd.scalawebapp.utils.HashingUtils
 import io.circe.generic.auto.*
 
 import java.util.UUID.randomUUID
-import engineering.dd.scalawebapp.utils.HashingUtils
-
-case class RefreshTokenPayload(id: String) extends TokenPayload
 
 trait RefreshTokenService {
   def createRefreshToken(
@@ -30,7 +28,7 @@ class RefreshTokenServiceImpl(
       userId: String,
       fingerprint: String
   ): IO[String] = {
-    val refreshTokenStr = RefreshTokenUtils.createToken
+    val refreshTokenStr = Utils.createRefreshToken
     refreshTokenDao
       .create(
         id = randomUUID.toString,

@@ -1,4 +1,4 @@
-package engineering.dd.scalawebapp.auth
+package engineering.dd.scalawebapp.auth.refreshtoken
 
 case class RefreshToken(
     id: String,

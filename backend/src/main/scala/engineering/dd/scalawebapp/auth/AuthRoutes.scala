@@ -5,6 +5,8 @@ import engineering.dd.scalawebapp.user.UserExistsError
 import engineering.dd.scalawebapp.user.userToDto
 import engineering.dd.scalawebapp.utils.CookieNotFoundError
 import engineering.dd.scalawebapp.utils.CookieUtils
+import engineering.dd.scalawebapp.utils.ErrorResponse
+import engineering.dd.scalawebapp.auth.refreshtoken.RefreshTokenNotFoundError
 import io.circe.generic.auto.*
 import io.circe.syntax.*
 import org.http4s.EntityDecoder
@@ -19,14 +21,11 @@ import org.typelevel.log4cats.LoggerFactory
 case class SignInBody(email: String, password: String)
 case class SignUpBody(email: String, password: String)
 case class RefreshBody(userId: String)
-case class ErrorBody(messages: List[String])
 
 implicit val signInBodyDecoder: EntityDecoder[IO, SignInBody] =
   jsonOf[IO, SignInBody]
-
 implicit val signUpBodyDecoder: EntityDecoder[IO, SignUpBody] =
   jsonOf[IO, SignUpBody]
-
 implicit val refreshBodyDecoder: EntityDecoder[IO, RefreshBody] =
   jsonOf[IO, RefreshBody]
 
@@ -72,7 +71,7 @@ object AuthRoutes {
             }
             .handleErrorWith { case _: UserExistsError =>
               Conflict(
-                ErrorBody(List(s"User ${body.email} exists")).asJson
+                ErrorResponse.getErrorResponse(s"User ${body.email} exists")
               )
             }
         } yield res
@@ -102,10 +101,12 @@ object AuthRoutes {
           .handleErrorWith {
             case _: RefreshTokenNotFoundError =>
               Conflict(
-                ErrorBody(List("Could not refresh your token")).asJson
+                ErrorResponse.getErrorResponse("Could not refresh your token")
               )
             case _: CookieNotFoundError =>
-              BadRequest(ErrorBody(List("Auth cookie not found")).asJson)
+              BadRequest(
+                ErrorResponse.getErrorResponse("Auth cookie not found")
+              )
           }
 
       case req @ POST -> Root / "signout" =>
@@ -120,7 +121,9 @@ object AuthRoutes {
             .map(_.removeCookie("refresh-token"))
             .map(_.removeCookie("fingerprint"))
         } yield res).handleErrorWith { case _: CookieNotFoundError =>
-          BadRequest(ErrorBody(List("Could not find auth cookie")).asJson)
+          BadRequest(
+            ErrorResponse.getErrorResponse("Could not find auth cookie")
+          )
         }
     }
 

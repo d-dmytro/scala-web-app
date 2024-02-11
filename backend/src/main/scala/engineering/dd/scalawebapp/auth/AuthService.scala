@@ -3,9 +3,12 @@ package engineering.dd.scalawebapp.auth
 import cats.effect.IO
 import com.github.t3hnar.bcrypt.*
 import engineering.dd.scalawebapp.AuthConfig
+import engineering.dd.scalawebapp.auth.utils.Fingerprint
+import engineering.dd.scalawebapp.auth.utils.JWT
 import engineering.dd.scalawebapp.user.CreateUserData
 import engineering.dd.scalawebapp.user.User
 import engineering.dd.scalawebapp.user.UserDao
+import engineering.dd.scalawebapp.auth.refreshtoken.RefreshTokenService
 import io.circe.generic.auto.*
 
 case class SignInResult(
@@ -28,6 +31,8 @@ case class RefreshTokenResult(
     accessToken: String,
     refreshToken: String
 )
+
+trait TokenPayload
 
 case class AccessTokenPayload(userId: String) extends TokenPayload
 
@@ -55,7 +60,7 @@ class AuthServiceImpl(
     user <- getUserAndValidatePassword(email, password)
     signInData <- user match {
       case Some(user) => {
-        val fingerprint = FingerprintUtils.createFingerprint
+        val fingerprint = Fingerprint.create
         val accessToken = createAccessToken(user.id)
         refreshTokenService
           .createRefreshToken(user.id, fingerprint)
@@ -75,7 +80,7 @@ class AuthServiceImpl(
   } yield signInData
 
   def signUp(input: SignUpInput): IO[SignUpResult] = {
-    val fingerprint = FingerprintUtils.createFingerprint
+    val fingerprint = Fingerprint.create
     for {
       hashedPassword <- IO.fromTry(input.password.bcryptSafeBounded)
       user <- userDao.createUser(CreateUserData(input.email, hashedPassword))
@@ -104,7 +109,7 @@ class AuthServiceImpl(
       accessToken: String,
       checkExpiration: Boolean = true
   ): IO[AccessTokenPayload] =
-    JwtUtils.decodeJwt[AccessTokenPayload](
+    JWT.decodeJwt[AccessTokenPayload](
       accessToken,
       config.jwtSecret,
       checkExpiration
@@ -126,7 +131,7 @@ class AuthServiceImpl(
   }
 
   private def createAccessToken(userId: String) =
-    JwtUtils.createJwt(
+    JWT.createJwt(
       AccessTokenPayload(userId),
       AccessTokenAge,
       config.jwtSecret

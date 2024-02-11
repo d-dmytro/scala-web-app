@@ -3,6 +3,7 @@ package engineering.dd.scalawebapp.auth
 import cats.data.Kleisli
 import cats.data.OptionT
 import cats.effect.IO
+import engineering.dd.scalawebapp.auth.utils.JwtExpiredError
 import engineering.dd.scalawebapp.user.User
 import engineering.dd.scalawebapp.user.UserDao
 import engineering.dd.scalawebapp.utils.CookieNotFoundError

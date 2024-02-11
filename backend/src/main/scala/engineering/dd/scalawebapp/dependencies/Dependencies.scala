@@ -14,10 +14,10 @@ import engineering.dd.scalawebapp.auth.AuthMiddleware
 import engineering.dd.scalawebapp.auth.AuthRoutes
 import engineering.dd.scalawebapp.auth.AuthService
 import engineering.dd.scalawebapp.auth.AuthServiceImpl
-import engineering.dd.scalawebapp.auth.RefreshTokenDao
-import engineering.dd.scalawebapp.auth.RefreshTokenDaoImpl
-import engineering.dd.scalawebapp.auth.RefreshTokenService
-import engineering.dd.scalawebapp.auth.RefreshTokenServiceImpl
+import engineering.dd.scalawebapp.auth.refreshtoken.RefreshTokenDao
+import engineering.dd.scalawebapp.auth.refreshtoken.RefreshTokenDaoImpl
+import engineering.dd.scalawebapp.auth.refreshtoken.RefreshTokenService
+import engineering.dd.scalawebapp.auth.refreshtoken.RefreshTokenServiceImpl
 import engineering.dd.scalawebapp.invoice.InvoiceRoutes
 import engineering.dd.scalawebapp.invoice.InvoiceService
 import engineering.dd.scalawebapp.invoice.InvoiceServiceImpl
